@@ -2,7 +2,7 @@ const express = require('express');
 const tourController = require('./../controllers/tourController');
 const authController = require('./../controllers/authController');
 const reviewRoutes = require('./reviewRoutes');
-
+const bookingRoutes = require('./bookingRoutes');
 const router = express.Router();
 
 // router.param('id', tourController.checkId);
@@ -12,6 +12,7 @@ const router = express.Router();
 // GET /tour/434rf/reviews
 router.use('/:tourId/reviews', reviewRoutes); // all route end with /:tourId/reviews, redirected to review router
 
+router.use('/:tourId/bookings', bookingRoutes);
 router
   .route('/top-5-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTours);

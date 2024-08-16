@@ -1,10 +1,13 @@
 const express = require('express');
 const bookingController = require('./../controllers/bookingController');
 const authContoller = require('./../controllers/authController');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use(authContoller.protect);
-router.get('/checkout-session/:tourID', bookingController.getCheckoutSession);
+router.get(
+  '/checkout-session/:tourID/:dateID',
+  bookingController.getCheckoutSession,
+);
 
 router.use(authContoller.restrictTo('admin', 'lead-guide'));
 

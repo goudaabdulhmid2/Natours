@@ -9,6 +9,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const AppErorr = require('./utils/appErorr');
 const globalErrorHandler = require('./controllers/errorController');
@@ -124,6 +125,8 @@ app.use(
     ], // simply an array of properties allow duplicates in the query string
   }),
 );
+
+// app.use(compression()); // compress all text send to client
 
 // Test middleware
 app.use((req, res, next) => {

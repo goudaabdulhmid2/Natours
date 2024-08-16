@@ -24,7 +24,6 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
-    serverSelectionTimeoutMS: 5000,
   })
   .then(() => console.log('DB connections successful! '));
 

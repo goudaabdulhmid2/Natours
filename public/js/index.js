@@ -1,6 +1,6 @@
 import '@babel/polyfill';
 import { displayMap } from './mapbox';
-import { login, logout } from './login';
+import { login, logout, signup } from './login';
 import { updateSettings } from './updateSetting';
 import { bookTour } from './stripe';
 
@@ -11,8 +11,9 @@ const logoutBtn = document.querySelector('.nav__el--logout');
 const updateData = document.querySelector('.form-user-data');
 const updatePassword = document.querySelector('.form-user-password');
 const bookingBtn = document.getElementById('book-tour');
+const signupForm = document.querySelector('.form--signup');
 // Values
-
+const dateID = document.getElementById('tour-date-id');
 // Delegation
 if (mapBox) {
   const locations = JSON.parse(mapBox.dataset.locations);
@@ -68,6 +69,19 @@ if (bookingBtn) {
     // e.target => element was clicked
     e.target.textContent = 'Processing...';
     const tourID = e.target.dataset.tourId;
-    bookTour(tourID);
+    bookTour(tourID, dateID.value);
+  });
+}
+
+if (signupForm) {
+  signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const passwordConfrim = document.getElementById('password-confirm').value;
+
+    signup(name, email, password, passwordConfrim);
   });
 }

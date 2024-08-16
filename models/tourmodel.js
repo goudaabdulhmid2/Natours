@@ -80,7 +80,19 @@ const tourSchema = new mongoose.Schema(
       default: Date.now(),
       select: false,
     },
-    startDates: [Date],
+    startDates: [
+      {
+        date: Date,
+        participants: {
+          type: Number,
+          default: 0,
+        },
+        soldOut: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
     secretTour: {
       type: Boolean,
       default: false,
@@ -167,10 +179,22 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-tourSchema.post(/^find/, function (docs, next) {
-  console.log(`Query took ${Date.now() - this.start} milliseconds`);
-  next();
-});
+tourSchema.methods.incressedBooking = async function (dateID) {
+  const date = this.startDates.id(dateID);
+
+  date.participants += 1;
+
+  if (date.participants >= this.maxGroupSize) {
+    date.soldOut = true;
+  }
+
+  return await this.save();
+};
+
+// tourSchema.post(/^find/, function (docs, next) {
+//   console.log(`Query took ${Date.now() - this.start} milliseconds`);
+//   next();
+// });
 
 // ================================================
 // Aggergation Middelware

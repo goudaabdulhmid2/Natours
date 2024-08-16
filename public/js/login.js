@@ -34,3 +34,27 @@ export const logout = async () => {
     showAlert('error', 'Error logging out! Try again.');
   }
 };
+
+export const signup = async (name, email, password, passwordConfrim) => {
+  try {
+    console.log(name, email, password, passwordConfrim);
+    const res = await axios({
+      method: 'POST',
+      url: 'http://127.0.0.1:8000/api/v1/users/signup',
+      data: {
+        name,
+        email,
+        password,
+        passwordConfrim,
+      },
+    });
+    if (res.data.status === 'success') {
+      showAlert('success', 'Logged in successfuly!');
+      window.setTimeout(() => {
+        location.assign('/');
+      }, 1500);
+    }
+  } catch (err) {
+    showAlert('error', err.response.data.message);
+  }
+};

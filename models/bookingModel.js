@@ -23,6 +23,7 @@ const bookingSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  date: Date,
 });
 
 bookingSchema.pre(/^find/, function (next) {

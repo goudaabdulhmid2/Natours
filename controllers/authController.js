@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const User = require('./../models/usermodel');
+const Booking = require('./../models/bookingModel');
 const { promisify } = require('util');
 const catchAsync = require('./../utils/catchAsync');
 const jwt = require('jsonwebtoken');
@@ -52,7 +53,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     role: req.body.role,
   });
   const url = `${req.protocol}://${req.get('host')}/me`;
-  console.log(url);
+  // console.log(url);
   await new Email(newUser, url).sendWelcome();
   createSendToken(newUser, 201, res);
 });
@@ -174,6 +175,22 @@ exports.restrictTo = (...roles) => {
     next();
   };
 };
+
+exports.restructReview = catchAsync(async (req, res, next) => {
+  // 1) find booking
+  const booking = await Booking.findOne({
+    user: req.user,
+    tour: req.params.tourId,
+  });
+
+  // 2) If no booking found, return an error
+  if (!booking)
+    return next(
+      new AppError('You can only review tours you have booked!', 403),
+    );
+
+  next();
+});
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // 1) get user based on user email

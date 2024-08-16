@@ -42,7 +42,7 @@ block content
         .overview-box__group
           h2.heading-secondary.ma-bt-lg Quick facts
 
-          - const date= tour.startDates[0].toLocaleString('en-us',{month:'long',year:'numeric'})
+          - const date= tour.startDates[0].date.toLocaleString('en-us',{month:'long',year:'numeric'})
           - const Participants= `${tour.maxGroupSize} people`
           - const rating= `${tour.ratingsAverage} / 5`
           +overviewBox('Next date',date,'calendar')
@@ -92,6 +92,11 @@ block content
         h2.heading-secondary What are you waiting for?
         p.cta__text= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!` 
         if user
+          select#tour-date-id.dropdown 
+            each date in tour.startDates
+              - const rem= tour.maxGroupSize-date.participants
+              if !date.soldOut
+               option(value=`${date._id}`) #{date.date.toDateString()} Remaining #{rem>0?rem:0} Places 
           button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
         else
            a.btn.btn--green.span-all-rows(href=`/login`) Log in to book tour
