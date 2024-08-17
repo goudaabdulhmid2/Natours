@@ -2,7 +2,7 @@ extends base
 include _reviewCard
 
 block append head
-  script(src='https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.js')
+  
   link(href='https://api.mapbox.com/mapbox-gl-js/v3.5.1/mapbox-gl.css' rel='stylesheet')
 
 
@@ -35,6 +35,11 @@ block content
           svg.heading-box__icon
             use(xlink:href='/img/icons.svg#icon-map-pin')
           span.heading-box__text= tour.startLocation.description
+      .heading-box__group
+        if hasBookedTour
+          .heading-box__detail
+            a.btn.btn--white.btn--outline.heading-box__text(href=`/${tour.slug}/review`) Write a review 
+        
 
   section.section-description
     .overview-box
@@ -81,22 +86,22 @@ block content
     .reviews
       each review in tour.reviews 
         +reviewCard(review)
-
-  section.section-cta
-    .cta
-      .cta__img.cta__img--logo
-        img(src='/img/logo-white.png', alt='Natours logo')
-      img.cta__img.cta__img--1(src=`/img/tours/${tour.images[1]}`, alt='Tour picture')
-      img.cta__img.cta__img--2(src=`/img/tours/${tour.images[2]}`, alt='Tour picture')
-      .cta__content
-        h2.heading-secondary What are you waiting for?
-        p.cta__text= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!` 
-        if user
-          select#tour-date-id.dropdown 
-            each date in tour.startDates
-              - const rem= tour.maxGroupSize-date.participants
-              if !date.soldOut
-               option(value=`${date._id}`) #{date.date.toDateString()} Remaining #{rem>0?rem:0} Places 
-          button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
-        else
-           a.btn.btn--green.span-all-rows(href=`/login`) Log in to book tour
+  if !hasBookedTour
+    section.section-cta
+      .cta
+        .cta__img.cta__img--logo
+          img(src='/img/logo-white.png', alt='Natours logo')
+        img.cta__img.cta__img--1(src=`/img/tours/${tour.images[1]}`, alt='Tour picture')
+        img.cta__img.cta__img--2(src=`/img/tours/${tour.images[2]}`, alt='Tour picture')
+        .cta__content
+          h2.heading-secondary What are you waiting for?
+          p.cta__text= `${tour.duration} days. 1 adventure. Infinite memories. Make it yours today!` 
+          if user
+            select#tour-date-id.dropdown 
+              each date in tour.startDates
+                - const rem= tour.maxGroupSize-date.participants
+                if !date.soldOut
+                option(value=`${date._id}`) #{date.date.toDateString()} Remaining #{rem>0?rem:0} Places 
+            button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
+          else
+            a.btn.btn--green.span-all-rows(href=`/login`) Log in to book tour

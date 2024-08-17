@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const User = require('./../models/usermodel');
 const Booking = require('./../models/bookingModel');
+const Tour = require('./../models/tourmodel');
 const { promisify } = require('util');
 const catchAsync = require('./../utils/catchAsync');
 const jwt = require('jsonwebtoken');
@@ -178,8 +179,18 @@ exports.restrictTo = (...roles) => {
 
 exports.restructReview = catchAsync(async (req, res, next) => {
   // 1) find booking
+
+  // from Review
+  const user = req.user ? req.user : res.locals.user;
+  if (req.params.slug) {
+    const tour = await Tour.findOne({ slug: req.params.slug });
+    req.params.tourId = tour._id;
+  }
+
+  //console.log(res.locals.user.tourId);
+
   const booking = await Booking.findOne({
-    user: req.user,
+    user,
     tour: req.params.tourId,
   });
 

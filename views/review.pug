@@ -1,0 +1,16 @@
+extends base
+
+block content
+    main.main
+        .login-form
+            h2.heading-secondary.ma-bt-lg= title
+            form.form.form--review
+                .form__group
+                    label.form__label(for='rating') Rating
+                    input#rating.form__input(type='number', placeholder='5', min='1', max='5', required)
+                .form__group.ma-bt-md
+                    label.form__label(for='review') Review
+                    textarea#review.form__input.form__textarea(placeholder='Write your review here...', required)
+                .form__group
+                    
+                    button.btn.btn--green#submit-review(data-tour-id=`${tourId}`) Submit Review

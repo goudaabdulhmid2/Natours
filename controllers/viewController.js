@@ -20,10 +20,17 @@ exports.getOverview = catchAsync(async (req, res, next) => {
 
 exports.getTour = catchAsync(async (req, res, next) => {
   // 1) Get data. for the requsted tour (including reviews and guides)
+  const user = res.locals.user;
   const tour = await Tour.findOne({ slug: req.params.slug }).populate({
     path: 'reviews',
     select: 'review rating user',
   });
+
+  let hasBookedTour = false;
+  if (user) {
+    const booking = await Booking.findOne({ tour: tour._id, user: user._id });
+    if (booking) hasBookedTour = true;
+  }
 
   if (!tour) return next(new AppError('No Tour with this name!.', 404));
 
@@ -31,6 +38,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   res.status(200).render('tour', {
     title: `${tour.name} Tour`,
     tour,
+    hasBookedTour,
   });
 });
 
@@ -64,3 +72,11 @@ exports.getMyTour = catchAsync(async (req, res, next) => {
     tours,
   });
 });
+
+exports.getReviewForm = (req, res) => {
+  console.log(req.params.tourId);
+  res.status(200).render('review', {
+    title: `${req.params.slug} Tour Review`,
+    tourId: req.params.tourId,
+  });
+};
