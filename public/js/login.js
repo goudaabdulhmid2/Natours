@@ -39,7 +39,6 @@ export const logout = async () => {
 
 export const signup = async (name, email, password, passwordConfrim) => {
   try {
-    console.log(name, email, password, passwordConfrim);
     const res = await axios({
       method: 'POST',
       url: 'http://127.0.0.1:8000/api/v1/users/signup',

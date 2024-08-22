@@ -33,6 +33,5 @@ export const updateTour = async (tourId, data) => {
     }
   } catch (err) {
     showAlert('error', err.response.data.message);
-    console.log(err);
   }
 };
