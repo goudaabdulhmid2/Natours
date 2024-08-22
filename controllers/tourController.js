@@ -27,32 +27,35 @@ exports.uploadTourImages = upload.fields([
 // upload.array('images', 5); => one field but has multiple image, req.files
 
 exports.resizeTourImages = catchAsync(async (req, res, next) => {
-  if (!req.files.imageCover || !req.files.images) return next();
-
-  // 1) Cover image
-  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
-  await sharp(req.files.imageCover[0].buffer)
-    .resize(2000, 1333)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`public/img/tours/${req.body.imageCover}`);
+  if (req.files.imageCover) {
+    // 1) Cover image
+    req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+    await sharp(req.files.imageCover[0].buffer)
+      .resize(2000, 1333)
+      .toFormat('jpeg')
+      .jpeg({ quality: 90 })
+      .toFile(`public/img/tours/${req.body.imageCover}`);
+  }
 
   // 2) Images
-  req.body.images = [];
-  // Move to the next as soon as this part is complated, this the reason why we use pronise.all
-  await Promise.all(
-    req.files.images.map(async (img, i) => {
-      const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+  if (req.files.images) {
+    req.body.images = [];
+    // Move to the next as soon as this part is complated, this the reason why we use pronise.all
+    await Promise.all(
+      req.files.images.map(async (img, i) => {
+        const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
 
-      await sharp(img.buffer)
-        .resize(2000, 1333)
-        .toFormat('jpeg')
-        .jpeg({ quality: 90 })
-        .toFile(`public/img/tours/${filename}`);
+        await sharp(img.buffer)
+          .resize(2000, 1333)
+          .toFormat('jpeg')
+          .jpeg({ quality: 90 })
+          .toFile(`public/img/tours/${filename}`);
 
-      req.body.images.push(filename);
-    }),
-  );
+        req.body.images.push(filename);
+      }),
+    );
+  }
+
   next();
 });
 
@@ -61,6 +64,16 @@ exports.getAllTours = factory.getAll(Tour);
 exports.getTour = factory.getOne(Tour, { path: 'reviews' });
 
 exports.createTour = factory.creatOne(Tour);
+
+exports.tourParse = (req, res, next) => {
+  // Ensure startDates is an array
+  if (Array.isArray(req.body['startDates'])) {
+    req.body['startDates'] = req.body['startDates'].map((dateStr) =>
+      typeof dateStr === 'string' ? JSON.parse(dateStr) : dateStr,
+    );
+  }
+  next();
+};
 
 exports.updateTour = factory.updateOne(Tour);
 

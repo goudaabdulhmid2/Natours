@@ -1,6 +1,7 @@
 const Tour = require('./../models/tourmodel');
 const User = require('./../models/usermodel');
 const Booking = require('./../models/bookingModel');
+const Review = require('./../models/reviweModel');
 const catchAsync = require('./../utils/catchAsync');
 const tourController = require('./../controllers/tourController');
 const AppError = require('./../utils/appErorr');
@@ -14,6 +15,19 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   // 3)Render that templates using tour data
   res.status(200).render('overview', {
     title: 'All Tours',
+    tours,
+  });
+});
+
+exports.manageTours = catchAsync(async (req, res, next) => {
+  // 1) Get tour data from collection
+  const tours = await Tour.find();
+
+  // 2) Build template
+
+  // 3)Render that templates using tour data
+  res.status(200).render('manageTour', {
+    title: 'Manage Tours',
     tours,
   });
 });
@@ -80,3 +94,23 @@ exports.getReviewForm = (req, res) => {
     tourId: req.params.tourId,
   });
 };
+
+exports.getTourUpdate = catchAsync(async (req, res, next) => {
+  const tour = await Tour.findOne({ slug: req.params.slug });
+  const guides = await User.find({ role: { $in: ['guide', 'lead-guide'] } });
+
+  res.status(200).render('updateTour', {
+    title: `${req.params.slug} Update`,
+    tour,
+    guides,
+  });
+});
+
+exports.getReviewForUser = catchAsync(async (req, res, next) => {
+  const reviews = await Review.find({ user: req.user._id });
+
+  res.status(200).render('myReviews', {
+    title: 'My Reviews',
+    reviews,
+  });
+});

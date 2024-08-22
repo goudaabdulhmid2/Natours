@@ -1,0 +1,11 @@
+extends base
+include _reviewCard
+
+block content
+  section.section-reviews
+    .reviews
+      if reviews.length > 0
+        each review in reviews
+          +reviewCard(review,'my')
+      else
+        h2.heading-primary What are you waiting for? Go book and make your first review

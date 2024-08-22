@@ -48,7 +48,6 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   // This only TEMPORARY, because it's Unsecure: everyone can make booking without paiying
   const { tour, user, price, date } = req.query;
   const tourDate = await Tour.findById(tour);
-  console.log(tour, user, price, date);
 
   if (!tour || !user || !price || !tourDate || !date) return next();
 

@@ -1,0 +1,178 @@
+extends base
+
+block content
+  main.main
+    .admin-form-container
+      h2.heading-secondary.ma-bt-lg Update Tour Data
+
+      form.form.form--admin
+        
+        .form__group
+          label.form__label(for='name') Tour Name
+          input#name.form__input(type='text', name='name', value=tour.name, required)
+        
+        .form__group
+          label.form__label(for='duration') Duration (days)
+          input#duration.form__input(type='number', name='duration', value=tour.duration, required)
+        
+        .form__group
+          label.form__label(for='maxGroupSize') Max Group Size
+          input#maxGroupSize.form__input(type='number', name='maxGroupSize', value=tour.maxGroupSize, required)
+
+        .form__group
+          label.form__label(for='difficulty') Difficulty
+          select#difficulty.form__input(name='difficulty', required)
+            option(value='easy' selected=tour.difficulty=='easy') Easy
+            option(value='medium' selected=tour.difficulty=='medium') Medium
+            option(value='difficult' selected=tour.difficulty=='difficult') Difficult
+        
+        .form__group
+          label.form__label(for='price') Price (per person)
+          input#price.form__input(type='number', name='price', value=tour.price, required)
+        
+        .form__group
+          label.form__label(for='summary') Summary
+          textarea#summary.form__input(name='summary', required)= tour.summary
+        
+        .form__group
+          label.form__label(for='description') Description
+          textarea#description.form__input(name='description', required)= tour.description
+
+
+        .form__group.form__photo-upload
+              img.form__user-photo(src=`/img/tours/${tour.imageCover}`, alt='Tour photo')
+              input.form__upload(type='file' , accept='image/*', id='photo',name='photo')
+              label(for='photo') Choose new Cover Image 
+
+        .form__group
+          label.form__label(for='startLocation_description') Start Location Description
+          input#startLocation_description.form__input(
+            type='text',
+            name='startLocation[description]',
+            value=tour.startLocation.description,
+            required
+          )
+
+          .form__group
+            label.form__label(for='startLocation_coordinates') Coordinates (longitude, latitude)
+            input#startLocation_coordinates.form__input(
+              type='text',
+              name='startLocation[coordinates]',
+              value=`${tour.startLocation.coordinates[0]},${tour.startLocation.coordinates[1]}`,
+              required
+            )
+
+          .form__group
+            label.form__label(for='startLocation_address') Start Location Address
+            input#startLocation_address.form__input(
+              type='text',
+              name='startLocation[address]',
+              value=tour.startLocation.address,
+              required
+            )
+
+
+        .form__group.form__photo-upload
+            each image, i in tour.images
+                img.form__user-photo(src=`/img/tours/${image}`, alt=`Tour image ${i+1}`)
+            input.form__upload(type='file', accept='image/*', id='images', name='images', multiple)
+            label(for='images') Choose new images
+
+
+        
+        .form__group
+           label.form__label(for='guides') Select Guides
+            select#guides.form__input(name='guides', required multiple)
+              each guide in guides
+                 option(value=guide._id selected=tour.guides.includes(guide._id))= guide.name
+
+        .form__group
+          label.form__label(for='startDates') Start Dates
+          if tour.startDates.length > 0
+            each startDate, index in tour.startDates
+              .form__start-date
+                label(for=`startDates[${index}][date]`) Date
+                input.form__input(
+                  type='date',
+                  id=`startDates[${index}][date]`,
+                  name=`startDates[${index}][date]`,
+                  value=new Date(startDate.date).toISOString().split('T')[0],
+                  required
+                )
+                label(for=`startDates[${index}][participants]`) Participants
+                input.form__input(
+                  type='number',
+                  id=`startDates[${index}][participants]`,
+                  name=`startDates[${index}][participants]`,
+                  value=startDate.participants || 0,
+                  required
+                )
+                label(for=`startDates[${index}][soldOut]`) Sold Out
+                input.form__input(
+                  type='checkbox',
+                  id=`startDates[${index}][soldOut]`,
+                  name=`startDates[${index}][soldOut]`,
+                  checked=startDate.soldOut || false
+                )
+          else 
+            .form__start-date
+              label(for='startDates[0][date]') Date
+              input.form__input(
+                type='date',
+                id='startDates[0][date]',
+                name='startDates[0][date]',
+                required
+              )
+              label(for='startDates[0][participants]') Participants
+              input.form__input(
+                type='number',
+                id='startDates[0][participants]',
+                name='startDates[0][participants]',
+                value=0,
+                required
+              )
+              label(for='startDates[0][soldOut]') Sold Out
+              input.form__input(
+                type='checkbox',
+                id='startDates[0][soldOut]',
+                name='startDates[0][soldOut]',
+                checked=false
+              )
+
+
+
+        .form__group
+          label.form__label(for='locations') Locations
+          .locations-container
+            each location, i in tour.locations
+              .location-group
+                input.form__input(
+                  type='text',
+                  name=`locations[${i}][description]`,
+                  value=location.description,
+                  required,
+                  placeholder='Description'
+                )
+                input.form__input(
+                  type='text',
+                  name=`locations[${i}][coordinates]`,
+                  value=`${location.coordinates[0]}, ${location.coordinates[1]}`,
+                  required,
+                  placeholder='Coordinates (longitude, latitude)'
+                )
+                input.form__input(
+                  type='text',
+                  name=`locations[${i}][address]`,
+                  value=location.address,
+                  placeholder='Address'
+                )
+                input.form__input(
+                  type='number',
+                  name=`locations[${i}][day]`,
+                  value=location.day,
+                  required,
+                  placeholder='Day'
+                )
+
+        .form__group
+          button.btn.btn--green#update-tour(data-tour-id=`${tour.id}`) Update Tour

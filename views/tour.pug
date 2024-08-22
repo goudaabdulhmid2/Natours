@@ -47,7 +47,7 @@ block content
         .overview-box__group
           h2.heading-secondary.ma-bt-lg Quick facts
 
-          - const date= tour.startDates[0].date.toLocaleString('en-us',{month:'long',year:'numeric'})
+          - const date= new Date(tour.startDates[0].date).toLocaleString('en-US', { month: 'long', year: 'numeric' })
           - const Participants= `${tour.maxGroupSize} people`
           - const rating= `${tour.ratingsAverage} / 5`
           +overviewBox('Next date',date,'calendar')
@@ -101,7 +101,7 @@ block content
               each date in tour.startDates
                 - const rem= tour.maxGroupSize-date.participants
                 if !date.soldOut
-                option(value=`${date._id}`) #{date.date.toDateString()} Remaining #{rem>0?rem:0} Places 
+                  option(value=`${date._id}`) #{new Date(date.date).toLocaleDateString()} Remaining #{rem>0?rem:0} Places 
             button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}`) Book tour now!
           else
             a.btn.btn--green.span-all-rows(href=`/login`) Log in to book tour

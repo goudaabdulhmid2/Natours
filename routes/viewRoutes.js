@@ -22,5 +22,24 @@ router.get(
   viewController.getReviewForm,
 );
 router.get('/my-tours', authConroller.protect, viewController.getMyTour);
+router.get(
+  '/manageTours',
+  authConroller.isLoggedIn,
+  authConroller.restrictTo('admin'),
+  viewController.manageTours,
+);
+
+router.get(
+  '/:slug/update',
+  authConroller.isLoggedIn,
+  authConroller.restrictTo('admin'),
+  viewController.getTourUpdate,
+);
+
+router.get(
+  '/my-reviews',
+  authConroller.isLoggedIn,
+  viewController.getReviewForUser,
+);
 
 module.exports = router;
