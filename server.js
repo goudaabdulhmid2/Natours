@@ -44,4 +44,11 @@ process.on('unhandledRejection', (err) => {
   });
 });
 
+process.on('SIGTERM', () => {
+  console.log('SIGTERM RECIVED, Shutting down gracefully');
+  server.close(() => {
+    console.log('process terminated!');
+  });
+});
+
 // in the unhandled rejection crashing the app kill is optional but when Uncaught Exceptions we need to kill

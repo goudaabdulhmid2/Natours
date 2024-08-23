@@ -15,7 +15,7 @@ const signToken = (id) => {
   });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
 
   // cookie is basically just a small piece of text that a server can send to clients.Then when the client receives a cookie, it will automatically store it and then automatically send it back along with all future requests to the same server.
@@ -23,11 +23,9 @@ const createSendToken = (user, statusCode, res) => {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
-    secure: false, // the cookie will only be sent on an encrypted connection.
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https', // the cookie will only be sent on an encrypted connection.
     httpOnly: true, // this will make it that cookie can not be accessed or modified in any way by the browser and so this is important in order to prevent those cross-site scripting attacks.so all the browser is gonna do when we set httpOnly to true is to basically  receive the cookie, store it, and then send it automatically along with every request.
   };
-
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
   res.cookie('jwt', token, cookieOptions);
 
@@ -53,7 +51,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   const url = `${req.protocol}://${req.get('host')}/me`;
   // console.log(url);
   await new Email(newUser, url).sendWelcome();
-  createSendToken(newUser, 201, res);
+  createSendToken(newUser, 201, req, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -78,7 +76,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 3) If everything is ok. send token to client
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.logout = (req, res) => {
@@ -260,7 +258,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   // 3) Update changePasswordAt property for the user
   // 4) Log the user in, send jwt
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -275,7 +273,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.passwordConfrim = req.body.passwordConfrim;
   await user.save();
   // 4) loh user in, send jwt
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 
   // why we don't use findByIdAndUpdate? for two reason the validation we put in user schame when we comper confirmPassword with password will not work. "Don't use update with anything related to password". second resone all pre-saved midleware not going to work.
 });
