@@ -19,6 +19,7 @@ const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const viewRouter = require('./routes/viewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+const bookingController = require('./controllers/bookingController');
 
 // Start express app
 const app = express();
@@ -106,6 +107,14 @@ const limiter = rateLimit({
   message: 'Too many requests from this IP, please try again in an hour!',
 });
 app.use('/api', limiter); // '/api' will affect to all routes start with api
+
+app.post(
+  '/webhock-checkout',
+  express.raw({
+    type: 'application/json',
+  }),
+  bookingController.webhookCheckOut,
+); // want the body coming from requset to be in raw format not in json
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' })); // And so now when we have a body larger than 10 kilobyte it will basically not be accepted
