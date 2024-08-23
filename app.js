@@ -10,6 +10,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const AppErorr = require('./utils/appErorr');
 const globalErrorHandler = require('./controllers/errorController');
@@ -27,6 +28,18 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 ///////////////////////////////////////////////////////////////////////
 // GlOBAL middelware
+
+// Implment CORS => Access-Control-Allow-Origin *
+app.use(cors());
+
+// backend api.natours.com, frontend natours.com
+// app.use(
+//   cros({
+//     originL: 'https://www.natours.com',
+//   }),
+// );
+
+app.options('*', cors());
 
 // Serving static file
 app.use(express.static(path.join(__dirname, 'public'))); // allow to me acsess all static file on public folder in views without write full path
