@@ -54,7 +54,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 const createBookingCheckout = async (session) => {
   const tour = session.client_reference_id;
   const { dateID, user } = session.metadata;
-  const price = session.line_items[0].price_data.unit_amount / 100;
+  const price = session.display_items[0].amount / 100;
 
   const tourDate = await Tour.findById(tour);
   const booking = await Booking.create({
@@ -78,13 +78,13 @@ exports.webhookCheckOut = (req, res, next) => {
       process.env.STRIPE_WEBHOOK_SECRT,
     );
   } catch (err) {
-    res.status(400).send(`Webhook error: ${err.message}`);
+    return res.status(400).send(`Webhook error: ${err.message}`);
   }
 
   if (event.type === 'checkout.session.completed')
     createBookingCheckout(event.data.object);
 
-  res.status.json({ received: true });
+  res.status(200).json({ received: true });
 };
 exports.getAllBookings = factory.getAll(Booking);
 exports.getBooking = factory.getOne(Booking);
