@@ -5,7 +5,7 @@ export const deleteTour = async (tourId) => {
   try {
     const res = await axios({
       method: 'DELETE',
-      url: `http://127.0.0.1:8000/api/v1/tours/${tourId}`,
+      url: `/api/v1/tours/${tourId}`,
     });
     if (res.data.status === 'success') {
       showAlert('success', 'Delete successfuly!');
@@ -21,7 +21,7 @@ export const updateTour = async (tourId, data) => {
   try {
     const res = await axios({
       method: 'PATCH',
-      url: `http://127.0.0.1:8000/api/v1/tours/${tourId}`,
+      url: `/api/v1/tours/${tourId}`,
       data,
     });
 
