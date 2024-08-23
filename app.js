@@ -126,7 +126,7 @@ app.use(
   }),
 );
 
-// app.use(compression()); // compress all text send to client
+app.use(compression()); // compress all text send to client
 
 // Test middleware
 app.use((req, res, next) => {
