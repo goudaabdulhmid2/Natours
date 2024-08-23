@@ -50,7 +50,7 @@ export const signup = async (name, email, password, passwordConfrim) => {
       },
     });
     if (res.data.status === 'success') {
-      showAlert('success', 'Logged in successfuly!');
+      showAlert('success', 'Sign Up successfuly!');
       window.setTimeout(() => {
         location.assign('/');
       }, 1500);
