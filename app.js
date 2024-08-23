@@ -109,10 +109,8 @@ const limiter = rateLimit({
 app.use('/api', limiter); // '/api' will affect to all routes start with api
 
 app.post(
-  '/webhock-checkout',
-  express.raw({
-    type: 'application/json',
-  }),
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
   bookingController.webhookCheckOut,
 ); // want the body coming from requset to be in raw format not in json
 

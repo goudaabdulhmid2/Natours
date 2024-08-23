@@ -49,28 +49,6 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.createBookingCheckout = catchAsync(async (req, res, next) => {
-//   // This only TEMPORARY, because it's Unsecure: everyone can make booking without paiying
-//   const { tour, user, price, date } = req.query;
-//   const tourDate = await Tour.findById(tour);
-
-//   if (!tour || !user || !price || !tourDate || !date) return next();
-
-//   const booking = await Booking.create({
-//     tour,
-//     user,
-//     price,
-//     date: tourDate.startDates.id(date).date,
-//   });
-
-//   if (!booking) return next();
-
-//   // increses date booking
-//   await tourDate.incressedBooking(date);
-
-//   res.redirect(req.originalUrl.split('?')[0]); // create new requset to `${req.protocol}://${req.get('host')}/
-// });
-
 const createBookingCheckout = async (session) => {
   const tour = session.client_reference_id;
   const { dateID, user } = session.metadata;
