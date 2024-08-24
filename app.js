@@ -108,12 +108,8 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter); // '/api' will affect to all routes start with api
 
-app.post(
-  '/webhoock-checkout',
-  express.raw({ type: 'application/json' }),
-  bookingController.webhookCheckOut,
-); // want the body coming from requset to be in raw format not in json
-
+// want the body coming from requset to be in raw format not in json
+app.use('/webhoock-checkout', express.raw({ type: 'application/json' }));
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' })); // And so now when we have a body larger than 10 kilobyte it will basically not be accepted
 

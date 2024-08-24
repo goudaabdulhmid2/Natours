@@ -80,7 +80,7 @@ exports.webhookCheckOut = (req, res, next) => {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET,
     );
-    console.log(event);
+    console.log('event: ', event);
     if (event.type === 'checkout.session.completed')
       createBookingCheckout(event.data.object);
 
