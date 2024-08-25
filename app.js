@@ -112,7 +112,7 @@ app.use('/api', limiter); // '/api' will affect to all routes start with api
 // want the body coming from requset to be in raw format not in json
 app.use(
   '/webhoock-checkout',
-  bodyParser.raw({ type: 'application/json' }),
+  express.json({ type: 'application/json' }),
   bookingController.webhookCheckOut,
 );
 // Body parser, reading data from body into req.body
