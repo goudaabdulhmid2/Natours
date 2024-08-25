@@ -114,3 +114,12 @@ exports.getReviewForUser = catchAsync(async (req, res, next) => {
     reviews,
   });
 });
+
+exports.alerts = (req, res, next) => {
+  const { alert } = req.query;
+  if (alert === 'booking') {
+    res.locals.alert =
+      "Your booking was successful! Please check your email for a confirmation. If your booking dosen't show up here immmediatly, please come back later.";
+  }
+  next();
+};
