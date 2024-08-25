@@ -11,6 +11,7 @@ const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const AppErorr = require('./utils/appErorr');
 const globalErrorHandler = require('./controllers/errorController');
@@ -109,7 +110,11 @@ const limiter = rateLimit({
 app.use('/api', limiter); // '/api' will affect to all routes start with api
 
 // want the body coming from requset to be in raw format not in json
-app.use('/webhoock-checkout', express.raw({ type: 'application/json' }));
+app.use(
+  '/webhoock-checkout',
+  bodyParser.raw({ type: 'application/json' }),
+  bookingController.webhookCheckOut,
+);
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' })); // And so now when we have a body larger than 10 kilobyte it will basically not be accepted
 
